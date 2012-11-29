@@ -56,7 +56,7 @@ initial
 
 
 initial
-	$monitor("IO[%b,%b,%b] IMEM[%d,%b] DMEM[%d,%d,%d] ALU[%d] Signals[%b,%b,%0d]",
+	$monitor("IO[%b,%b,%b] IMEM[%d,%b] DMEM[%d,%d,%d] ALU[%d] Signals[%b,%b,%0d] Probes[%d,%d,%d]",
 		io_display,
 		io_sw0,
 		io_sw1,
@@ -72,13 +72,16 @@ initial
 		
 		clock,
 		reset,
-		$time
+		$time,
+      
+      probe1,
+      probe2,
+      probe3
 		);
 
 
 // Instantiation of processor
 
-	
 PMIPSL0 comp(
 	imemaddr, 	// Instruction memory addr
 	dmemaddr,	// Data memory addr

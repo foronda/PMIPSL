@@ -121,7 +121,7 @@ reg [15:0] EXMEMJumpAddr;
 reg [15:0] EXMEMPCPlus2;
 
 //   --- Variables in the MEM stage ---
-wire MEMBranchMuxAddr;
+wire MEMBranch;
 
 //   --- Variables in the MEM/WB pipeline register ---
 reg [15:0] MEMWBMemRead;
@@ -145,7 +145,7 @@ always @(posedge clock)
 	else if (PCControl == 1) PC <= PCPlus2;
 	else if (PCControl == 2)
 		begin
-			if(MEMBranchMuxAddr == 1)
+			if(MEMBranch == 1)
 				PC <= EXMEMBranchAddr;
 			else if (EXMEMJump == 1)
 				PC <= EXMEMJumpAddr;
@@ -170,6 +170,7 @@ always @(posedge clock)
 		end
 	end
 
+// Breaks up instruction
 assign IFIDOpcode = IFIDInstr[16:13];
 assign IFIDReadAddr1 = IFIDInstr[12:10];
 assign IFIDReadAddr2 = IFIDInstr[9:7];
@@ -213,8 +214,6 @@ Control Control(
 	IFIDOpcode,	// from the IFID pipeline register
 	reset
 	);
-
-assign probe1 = ALUSelect;
 
 //---- ID/EX Pipeline Register --------
 
@@ -290,7 +289,7 @@ always @(posedge clock)
 //------- MEM Stage ----------------
 
 // And Operation to determine if BEQ
-assign MEMBranchMuxAddr = (EXMEMBranch&EXMEMALUZero);
+assign MEMBranch = (EXMEMBranch&EXMEMALUZero);
 
 // Assign PMIPS Outputs
 assign dmemaddr = EXMEMALUOut;
@@ -316,5 +315,10 @@ MUX2 wbmux( // ALU multiplexer
 	MEMWBMemRead,		
 	MEMWBMemtoReg		
 	);	
-	
+
+// Assign debug probes
+assign probe1 = MEMBranch;
+assign probe2 = EXMEMJump;
+assign probe3 = WBData;
+
 endmodule

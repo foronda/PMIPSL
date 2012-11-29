@@ -21,7 +21,7 @@
 #include <malloc.h>
 #define alloca _alloca
 #endif
-static const char *ng0 = "IO[%b,%b,%b] IMEM[%d,%b] DMEM[%d,%d,%d] ALU[%d] Signals[%b,%b,%0d]";
+static const char *ng0 = "IO[%b,%b,%b] IMEM[%d,%b] DMEM[%d,%d,%d] ALU[%d] Signals[%b,%b,%0d] Probes[%d,%d,%d]";
 static const char *ng1 = "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchSubproject2.V";
 static int ng2[] = {0, 0};
 static const char *ng3 = "\nIO[display,switch0,switch1]\n";
@@ -58,6 +58,10 @@ static void Monitor_59_4_Func(char *t0)
     char *t18;
     char *t19;
     char *t21;
+    char *t22;
+    char *t23;
+    char *t24;
+    char *t25;
 
 LAB0:    t1 = (t0 + 1428U);
     t2 = *((char **)t1);
@@ -86,7 +90,13 @@ LAB0:    t1 = (t0 + 1428U);
     t18 = (t17 + 36U);
     t19 = *((char **)t18);
     t21 = xsi_vlog_time(t20, 1000.0000000000000, 1000.0000000000000);
-    xsi_vlogfile_write(1, 0, 3, ng0, 13, t0, (char)118, t2, 7, (char)118, t4, 1, (char)118, t7, 1, (char)118, t9, 16, (char)118, t10, 17, (char)118, t11, 16, (char)118, t12, 16, (char)118, t13, 16, (char)118, t14, 16, (char)118, t16, 1, (char)118, t19, 1, (char)118, t20, 64);
+    t22 = (t0 + 1520U);
+    t23 = *((char **)t22);
+    t22 = (t0 + 1612U);
+    t24 = *((char **)t22);
+    t22 = (t0 + 1704U);
+    t25 = *((char **)t22);
+    xsi_vlogfile_write(1, 0, 3, ng0, 16, t0, (char)118, t2, 7, (char)118, t4, 1, (char)118, t7, 1, (char)118, t9, 16, (char)118, t10, 17, (char)118, t11, 16, (char)118, t12, 16, (char)118, t13, 16, (char)118, t14, 16, (char)118, t16, 1, (char)118, t19, 1, (char)118, t20, 64, (char)118, t23, 16, (char)118, t24, 16, (char)118, t25, 16);
 
 LAB1:    return;
 }
