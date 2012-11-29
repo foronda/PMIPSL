@@ -1,5 +1,9 @@
-//Tyler Ebisuzaki
-//Nick Enomoto
+/*
+** Authors: Brylian Foronda, John Barret
+** Date: November 28, 2012
+** Fall 2012, EE 361L Final Lab Project
+** Pipeline MIPS Lite
+*/
 
 module PMIPSL0(
 	imemaddr, 	// Instruction memory addr

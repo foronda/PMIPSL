@@ -1,0 +1,5 @@
+verilog work "MIPS-Parts.V"
+verilog work "Control.V"
+verilog work "PMIPSL0.V"
+verilog work "testbenchPMIPSL0.V"
+verilog work "C:/Xilinx/13.4/ISE_DS/ISE//verilog/src/glbl.v"

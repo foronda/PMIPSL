@@ -13,26 +13,26 @@
 //
 
 module Control(
-	PCControl, // Control signals to PC circuitry
-	RegWrite,
-	RegDst,
-	ALUSrc,
-	ALU_Select, // Select to the ALU
-	Branch,
-	Jump,
-	MemWrite,
-	MemRead,
-	MemtoReg,
-	clock,	// Clock input signal
-	OpCode,	// Opcode from the IF/ID pipeline register
-	reset		// Used to clear controller
+	PCControl,  // Control signals to PC circuitry
+	RegWrite,   // Enable Register Write?
+	RegDst,     // Choose Register Write Address (0:$rt, 1:$rd)
+	ALUSrc,     // Choose ALU Source (0: Read Data 2, 1: SignExt)
+	ALUSelect, 	// Select to the ALU
+	Branch,		// Enable Branch?	
+	Jump,       // Enable Jump?
+	MemWrite,   // Enable MemWrite?
+	MemRead,    // Enable MemRead?
+	MemtoReg,   // Choose Which Data to Write to Register (0: ALUResult, 1: DM Read data)
+	clock,	   // Clock input signal
+	OpCode,	   // Opcode from the IF/ID pipeline register
+	reset		   // Used to clear controller
 	);
 
 output [1:0] PCControl;		
 output RegWrite;
 output RegDst;
 output ALUSrc;
-output [2:0] ALU_Select;
+output [2:0] ALUSelect;
 output Branch;
 output Jump;
 output MemWrite;
@@ -46,7 +46,7 @@ reg [1:0] PCControl;
 reg RegWrite;
 reg RegDst;
 reg ALUSrc;
-reg [2:0] ALU_Select;
+reg [2:0] ALUSelect;
 reg Branch;
 reg Jump;
 reg MemWrite;
@@ -154,148 +154,156 @@ always @(state)
 	if (state == 1)// Instruction Decode
 		begin
 		case(OpCode)
-		0:	begin // opcode for add is 0
-			RegWrite = 1;
-			RegDst = 1;   // 2nd register field
-			ALUSrc = 0;   // Use sign extended constant
-			ALU_Select = 0;    // Add
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0; // No access to memory
-			MemRead = 0;
-			MemtoReg = 0; // Write reg file from ALU
-			end
-		1:	begin // opcode for sub is 1
-			RegWrite = 1;
-			RegDst = 1;   // 2nd register field
-			ALUSrc = 0;   //
-			ALU_Select = 1;    // sub
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0; // No access to memory
-			MemRead = 0;
-			MemtoReg = 0; // Write reg file from ALU
-			end
-		2:	begin // opcode for slt is 2
-			RegWrite = 1;
-			RegDst = 1;   // 2nd register field
-			ALUSrc = 0;   //
-			ALU_Select = 2;    // 
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0; // No access to memory
-			MemRead = 0;
-			MemtoReg = 0; // Write reg file from ALU
-			end
-		3:	begin // opcode for lw 3
-			RegWrite = 1;
-			RegDst = 0;
-			ALUSrc = 1;
-			ALU_Select = 0;
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0;
-			MemRead = 1;
-			MemtoReg = 1;
-			end
-		4:	begin // opcode for sw 4
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 1;
-			ALU_Select = 0;
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 1;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		5:	begin // opcode for beq 5
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 0;
-			ALU_Select = 1;
-			Branch = 1; 
-			Jump = 0;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		6:	begin // opcode for addi is 6
-			RegWrite = 1;
-			RegDst = 0;   // 2nd register field
-			ALUSrc = 1;   // Use sign extended constant
-			ALU_Select = 0;    // Add
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0; // No access to memory
-			MemRead = 0;
-			MemtoReg = 0; // Write reg file from ALU
-			end
-		7:	begin // opcode for andi 7
-			RegWrite = 1;
-			RegDst = 0;
-			ALUSrc = 1;
-			ALU_Select = 4;
-			Branch = 0; 
-			Jump = 0;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		8:	begin // opcode for j 8
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 0;
-			ALU_Select = 0;
-			Branch = 0; 
-			Jump = 1;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		9:	begin // opcode for jal 9
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 0;
-			ALU_Select = 0;
-			Branch = 0; 
-			Jump = 1;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		10:begin // opcode for ret 10
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 0;
-			ALU_Select = 0;
-			Branch = 0; 
-			Jump = 1;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
-			end
-		default:
+		0:			// add instruction (R-Type)
 			begin
-			RegWrite = 0;
-			RegDst = 0;
-			ALUSrc = 0;
-			ALU_Select = 7;
-			Branch = 0;
-			Jump = 0;
-			MemWrite = 0;
-			MemRead = 0;
-			MemtoReg = 0;
+				RegDst = 1;    // Pick third reg field for dest reg
+				Jump = 0;      // Disable jump
+				Branch = 0;    // Disable branch
+				MemRead = 0;   // Disable memory
+				MemtoReg = 0;  // Select ALU to write to memory
+				ALUSelect = 0; // Have ALU do an ADD
+				MemWrite = 0;  // Disable memory
+				ALUSrc = 0;    // Select register for input to ALU
+				RegWrite = 1;  // Write result back to register file
+			end
+		1:			// subtract instruction (R-Type)
+			begin
+				RegDst = 1;			// Use $rd for destination register
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable brannch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Use ALU Result to Write Data to Register 
+				ALUSelect = 1;	// Have ALU do a SUBSTRACT
+				MemWrite = 0;		// Disaable memory write
+				ALUSrc = 0;			// Select $rt for ALU input
+				RegWrite = 1;		// Write result back to register $rd
+			end
+		2:			// slt instruction (R-Type)
+			begin
+				RegDst = 1;			// Use $rd for destination register
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable branch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Use ALU result to write data to register 
+				ALUSelect = 2;	// Have ALU do an SLT 
+				MemWrite = 0;		// Disable memory write
+				ALUSrc = 0;			// Select $rt for ALU input
+				RegWrite = 1;		// Write either a 1 or 0 back to register $rd
+			end
+		3: 		// lw instruction (I-Type)
+			begin
+				RegDst = 0;			// Use $rt for destination register
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable branch
+				MemRead = 1;		// Read value from calculated address
+				MemtoReg = 1;		// Read data from memory and store to Register
+				ALUSelect = 0;	// Have ALU calculate he address ($rs + SignExtend)
+				MemWrite = 0;		// Not writing to memory
+				ALUSrc = 1;			// Use Sign Extend for ALU input
+				RegWrite = 1;		// Write result back to register $rt
+			end
+		4:			// sw instruction (I-Type)
+			begin
+				RegDst = 0;			// We are not writing to register, value does not matter
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable branch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Doesn't matter, not writing to register
+				ALUSelect = 0;	// Have ALU calculate the address to write to ($rs + SignExtend)
+				MemWrite = 1;		// Use value of $rt to write memory data
+				ALUSrc = 1;			// Use signext for calculating memory address
+				RegWrite = 0;		// Disable register write
+			end
+		5:			// beq instruction (I-Type)
+			begin
+				RegDst = 0;			// Doesn't matter, not writing to register
+				Jump = 0;			// Disable jump
+				Branch = 1;			// Enable branch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Disable, not writing to register
+				ALUSelect = 1;	// Have ALU subtract to determine if equal
+				MemWrite = 0;		// Disable memory write
+				ALUSrc = 0;			// Use value of $rt to compare with $rs
+				RegWrite = 0;		// Disable register write
+			end
+		6: 		// addi instruction (I-Type)
+			begin
+				RegDst = 0;			// Use $rt for destination register
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable branch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Use ALU result to write data to register $rt
+				ALUSelect = 0;	// Have ALU do an add operation
+				MemWrite = 0;		// Not writing to memory
+				ALUSrc = 1;			// Use Sign Extend as ALU input
+				RegWrite = 1;		// Write ALU result to register $rt
+			end
+		7:			// andi instruction (I-Type)
+			begin
+				RegDst = 0;			// Use $rt for destination register
+				Jump = 0;			// Disable jump
+				Branch = 0;			// Disable branch
+				MemRead = 0;		// Disable memory read
+				MemtoReg = 0;		// Use ALU result to write data to register $rt
+				ALUSelect = 4;	// Use ALU to do an AND operation
+				MemWrite = 0;		// Not writing to memory
+				ALUSrc = 1;			// Use Sign Extend as ALU input
+				RegWrite = 1;		// Write ALU result to register $rt
+			end
+		8:			// j instruction (J-Type)
+			begin 
+				// Values don't matter if jump is enabled
+				RegDst = 0;
+				Jump = 1;
+				Branch = 0;
+				MemtoReg = 0;
+				ALUSelect = 0;
+				MemWrite = 0;
+				ALUSrc = 0;
+				RegWrite = 0;
+			end
+		9: 		// jal instruction (J-Type)
+			begin
+				RegDst = 0;
+				Jump = 1;
+				Branch = 0;
+				MemtoReg = 0;
+				ALUSelect = 0;
+				MemWrite = 0;
+				ALUSrc = 0;
+				RegWrite = 0;
+			end
+		10: 		// ret instruction (J-Type)
+			begin
+				RegDst = 0;
+				Jump = 1;
+				Branch = 0;
+				MemtoReg = 0;
+				ALUSelect = 0;
+				MemWrite = 0;
+				ALUSrc = 0;
+				RegWrite = 0;
+			end
+		default:			
+			begin
+				RegDst = 0;
+				Jump = 0;
+				Branch = 0;
+				MemtoReg = 0;
+				ALUSelect = 0;
+				MemWrite = 0;
+				ALUSrc = 0;
+				RegWrite = 0;
 			end
 		endcase
-		end
+	end
 
 	else // Insert bubble for all other states
 		begin
 		RegWrite = 0;
 		RegDst = 0;
 		ALUSrc = 0;
-		ALU_Select = 0;
+		ALUSelect = 0;
 		Branch = 0;
 		Jump = 0;
 		MemWrite = 0;
