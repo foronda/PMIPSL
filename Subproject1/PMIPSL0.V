@@ -20,16 +20,19 @@ module PMIPSL0(
    probe2,
    probe3
 	);
+   
+// PMIPS Outputs
+output [15:0] imemaddr;    // 16-Bit Register for Instruction Memory (PC)
+output [15:0] dmemaddr;    // DMem Address, calculated using ALU Results (EXMEM Stage)
+output [15:0] dmemwdata;   // DMem Data, read data from data memory
+output [15:0] aluresult;   
+output dmemwrite;	         // DMem Write enable
+output dmemread;	         // DMem Read enable
 
-output [16:0] imemaddr;
-output [15:0] dmemaddr;
-output [15:0] dmemwdata;
-output dmemwrite;	
-output dmemread;	
-output [15:0] aluresult;	
-input clock;
-input [16:0] imemrdata;	
+// PMIPS Inputs
+input [16:0] imemrdata;	   // 17-bit Instructions
 input [15:0] dmemrdata;
+input clock;
 input reset; 
 
 // 16-bit Debug Probes

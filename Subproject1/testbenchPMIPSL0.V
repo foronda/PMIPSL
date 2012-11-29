@@ -11,7 +11,7 @@
 module testbench;
 
 
-wire [16:0] imemaddr; 	// Instruction memory addr
+wire [15:0] imemaddr; 	// Instruction memory addr
 wire [15:0] dmemaddr;	// Data memory addr
 wire [15:0] dmemwdata;	// Data memory write-data
 wire dmemwrite;	// Data memory write enable

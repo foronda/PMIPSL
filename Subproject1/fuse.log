@@ -10,12 +10,12 @@ Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L
 WARNING:HDLCompiler:568 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchPMIPSL0.V" Line 51: Constant value is truncated to fit in <3> bits.
 Analyzing Verilog file "C:/Xilinx/13.4/ISE_DS/ISE//verilog/src/glbl.v" into library work
 Starting static elaboration
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 254: Size mismatch in connection of port <result>. Formal port size is 16-bit while actual signal size is 3-bit.
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 255: Size mismatch in connection of port <indata0>. Formal port size is 16-bit while actual signal size is 3-bit.
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 256: Size mismatch in connection of port <indata1>. Formal port size is 16-bit while actual signal size is 3-bit.
+WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 257: Size mismatch in connection of port <result>. Formal port size is 16-bit while actual signal size is 3-bit.
+WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 258: Size mismatch in connection of port <indata0>. Formal port size is 16-bit while actual signal size is 3-bit.
+WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 259: Size mismatch in connection of port <indata1>. Formal port size is 16-bit while actual signal size is 3-bit.
 Completed static elaboration
-Fuse Memory Usage: 117528 KB
-Fuse CPU Usage: 701 ms
+Fuse Memory Usage: 117336 KB
+Fuse CPU Usage: 670 ms
 Compiling module RegFile
 Compiling module Control
 Compiling module MUX2
@@ -28,5 +28,5 @@ Time Resolution for simulation is 1ps.
 Waiting for 1 sub-compilation(s) to finish...
 Compiled 8 Verilog Units
 Built simulation executable C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_isim_beh.exe
-Fuse Memory Usage: 123144 KB
-Fuse CPU Usage: 1076 ms
+Fuse Memory Usage: 122952 KB
+Fuse CPU Usage: 1091 ms

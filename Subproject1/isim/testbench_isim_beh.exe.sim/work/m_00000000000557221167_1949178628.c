@@ -68,7 +68,7 @@ LAB0:    t1 = (t0 + 600U);
     t12 = *((char **)t11);
     t13 = (t0 + 1336U);
     t14 = *((char **)t13);
-    xsi_vlogfile_write(1, 0, 3, ng0, 8, t0, (char)118, t2, 17, (char)118, t4, 17, (char)118, t6, 16, (char)118, t7, 16, (char)118, t9, 1, (char)118, t12, 1, (char)118, t14, 16);
+    xsi_vlogfile_write(1, 0, 3, ng0, 8, t0, (char)118, t2, 16, (char)118, t4, 17, (char)118, t6, 16, (char)118, t7, 16, (char)118, t9, 1, (char)118, t12, 1, (char)118, t14, 16);
 
 LAB1:    return;
 }
