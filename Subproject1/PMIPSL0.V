@@ -102,13 +102,13 @@ wire [15:0] EXALUSrc;
 wire [15:0] EXALUOut;
 wire EXALUZero;
 
-wire [15:0] branchaddr;
-wire [2:0] writeaddr;
+wire [15:0] EXBranchAddr;
+wire [2:0] EXWriteAddr;
 
 //   --- Variables in the EX/MEM pipeline register ---
 reg [15:0] EXMEMALUOut;
 reg EXMEMALUZero;
-reg [15:0] EXMEMbranchaddr;
+reg [15:0] EXMEMBranchAddr;
 reg EXMEMBranch;
 reg EXMEMRegWrite;
 reg EXMEMJump;
@@ -121,9 +121,8 @@ reg [15:0] EXMEMJumpAddr;
 reg [15:0] EXMEMPCPlus2;
 
 //   --- Variables in the MEM stage ---
-wire wbbranch;
-wire [15:0] memread;
-wire [15:0] pc2;
+wire MEMBranchMuxAddr;
+//wire [15:0] pc2;
 
 //   --- Variables in the MEM/WB pipeline register ---
 reg [15:0] MEMWBmemread;
@@ -147,8 +146,8 @@ always @(posedge clock)
 	else if (PCControl == 1) PC <= PCPlus2;
 	else if (PCControl == 2)
 		begin
-			if(wbbranch == 1)
-				PC <= EXMEMbranchaddr;
+			if(MEMBranchMuxAddr == 1)
+				PC <= EXMEMBranchAddr;
 			else if (EXMEMJump == 1)
 				PC <= EXMEMJumpAddr;
 			else
@@ -245,7 +244,7 @@ always @(posedge clock)
 //---- EX Stage --------
 
 MUX2S RegDstMux(
-	writeaddr,
+	EXWriteAddr,
 	IDEXReadAddr2,
 	IDEXReadAddr3,
 	IDEXRegDst
@@ -267,7 +266,7 @@ ALU ALU(
 	);		
 
 assign aluresult = EXALUOut; // Connect the alu with the outside world
-assign branchaddr = (IDEXSignExtend << 1) + IDEXPCPlus2;
+assign EXBranchAddr = (IDEXSignExtend << 1) + IDEXPCPlus2;
 //------ EX/MEM pipeline register ---
 
 
@@ -281,9 +280,9 @@ always @(posedge clock)
 	EXMEMJump <= IDEXJump;
 	EXMEMRegWrite <= IDEXRegWrite;
 	EXMEMBranch <= IDEXBranch;
-	EXMEMbranchaddr <= branchaddr;
+	EXMEMBranchAddr <= EXBranchAddr;
 	EXMEMRegRead2 <= IDEXRegRead2;
-	EXMEMwriteaddr <= writeaddr;
+	EXMEMwriteaddr <= EXWriteAddr;
 	EXMEMJumpAddr <= IDEXJumpAddr;
 	EXMEMPCPlus2 <= IDEXPCPlus2;
 	end
@@ -291,9 +290,9 @@ always @(posedge clock)
 
 //------- MEM Stage ----------------
 
-assign pc2 = EXMEMPCPlus2;
+//assign pc2 = EXMEMPCPlus2;
 assign Jwire = EXMEMJumpAddr;
-assign wbbranch = (EXMEMBranch&EXMEMALUZero);
+assign MEMBranchMuxAddr = (EXMEMBranch&EXMEMALUZero);
 
 //dmem out
 assign dmemaddr = EXMEMALUOut;
