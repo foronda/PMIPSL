@@ -64,8 +64,6 @@ wire [15:0] IDReadData2;			// $rt
 
 wire [15:0] IDSignExt; 				// Sign extension
 
-//wire [15:0] wdata;
-//wire [2:0] waddr;
 wire negclock;
 
 // Variables from the controller
@@ -87,7 +85,6 @@ reg [15:0] IDEXRegRead1;
 reg [15:0] IDEXRegRead2;
 reg [2:0] IDEXReadAddr2;
 reg [2:0] IDEXReadAddr3;
-reg [16:0] IDEXInstr; //connect to IFIDInstr
 reg [15:0] IDEXSignExtend;
 reg [2:0] IDEXALUSelect;
 reg [15:0] IDEXJumpAddr;
@@ -101,10 +98,9 @@ reg IDEXMemWrite;
 reg IDEXRegWrite;
 
 //   --- Variables in the EX stage ---
-wire [15:0] alusrc2;
-wire [15:0] aluout1;
-wire aluzero;
-wire [2:0] aluselect;
+wire [15:0] EXALUSrc;
+wire [15:0] EXALUOut;
+wire EXALUZero;
 
 wire [15:0] branchaddr;
 wire [2:0] writeaddr;
@@ -184,18 +180,12 @@ assign IFIDConst = IFIDInstr[6:0];
 
 //--- ID Stage ----------
 
-// Since the datapath is incomplete, the next three
-// lines are used to set inputs of the reg file.
-// You should replace this in your final implementation.
-// Note that these lines will set register $3 to the
-// value 5
-
 assign negclock = ~clock;  // Reg file is synchronized
 						   // to pos clock edge, so we
 						   // supply inverted clock
 						   // signal to the reg file.
 
- RegFile rfile1(
+ RegFile RegFile(
  	IDReadData1,			// read data output 1
 	IDReadData2,			// read data output 2
 	negclock,		
@@ -210,7 +200,7 @@ assign negclock = ~clock;  // Reg file is synchronized
 assign IDSignExt = {{9{IFIDInstr[6]}},IFIDInstr[6:0]};
 assign IDJumpAddr = {IFIDPCPlus2[15:14],IFIDInstr[12:0]<<1};
 
-Control cntrol1(
+Control Control(
 	PCControl,					
 	RegWrite,
 	RegDst,
@@ -235,7 +225,6 @@ always @(posedge clock)
 	IDEXPCPlus2 <= IFIDPCPlus2;	//pc?
 	IDEXRegRead1 <= IDReadData1;			//register val 1
 	IDEXRegRead2 <= IDReadData2;			//register val 2
-	IDEXInstr <= IFIDInstr; 		//sasaki said un-needed?
 	IDEXSignExtend <= IDSignExt;	//sign extension
 	IDEXALUSelect <= ALUSelect;	//alu select = aluop?
 	IDEXReadAddr2 <= IFIDReadAddr2;
@@ -255,37 +244,37 @@ always @(posedge clock)
 
 //---- EX Stage --------
 
-MUX2S regmux(
+MUX2S RegDstMux(
 	writeaddr,
 	IDEXReadAddr2,
 	IDEXReadAddr3,
 	IDEXRegDst
 	);
 
-MUX2 alumux( // ALU multiplexer
-	alusrc2,		
+MUX2 ALUMux( // ALU multiplexer
+	EXALUSrc,		
 	IDEXRegRead2,	
 	IDEXSignExtend,	
 	IDEXALUSrc		
 	);	
 
-ALU alu1(
-	aluout1,	// 16-bit output from the ALU
-	aluzero,	// equals 1 if the result is 0, and 0 otherwise
+ALU ALU(
+	EXALUOut,	// 16-bit output from the ALU
+	EXALUZero,	// equals 1 if the result is 0, and 0 otherwise
 	IDEXRegRead1,	// data input
-	alusrc2,		// data input
+	EXALUSrc,		// data input
 	IDEXALUSelect		// 3-bit select
 	);		
 
-assign aluresult = aluout1; // Connect the alu with the outside world
+assign aluresult = EXALUOut; // Connect the alu with the outside world
 assign branchaddr = (IDEXSignExtend << 1) + IDEXPCPlus2;
 //------ EX/MEM pipeline register ---
 
 
 always @(posedge clock)
  	begin
-	EXMEMALUOut <= aluout1;
-	EXMEMALUZero <= aluzero;
+	EXMEMALUOut <= EXALUOut;
+	EXMEMALUZero <= EXALUZero;
 	EXMEMMemtoReg <= IDEXMemtoReg;
 	EXMEMMemRead <= IDEXMemRead;
 	EXMEMMemWrite <= IDEXMemWrite;
