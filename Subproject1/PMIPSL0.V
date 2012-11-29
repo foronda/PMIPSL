@@ -220,13 +220,13 @@ assign probe1 = ALUSelect;
 
 always @(posedge clock)
 	begin
-	IDEXPCPlus2 <= IFIDPCPlus2;	//pc?
-	IDEXReadData1 <= IDReadData1;			//register val 1
-	IDEXReadData2 <= IDReadData2;			//register val 2
-	IDEXSignExtend <= IDSignExt;	//sign extension
-	IDEXALUSelect <= ALUSelect;	//alu select = aluop?
-	IDEXReadAddr2 <= IFIDReadAddr2;
-	IDEXReadAddr3 <= IFIDReadAddr3;
+	IDEXPCPlus2 <= IFIDPCPlus2;	   
+	IDEXReadData1 <= IDReadData1;		// Register value 1 $rs
+	IDEXReadData2 <= IDReadData2;		// Register value 2 $rt
+	IDEXSignExtend <= IDSignExt;	   // 16-bit Sign Ext constant
+	IDEXALUSelect <= ALUSelect;	   // 3-bit ALU Select, determines ALU operation
+	IDEXReadAddr2 <= IFIDReadAddr2;  // 3-bit Read/Write Address $rt
+	IDEXReadAddr3 <= IFIDReadAddr3;  // 3-bit Read/Write Address $rd
 	IDEXBranch <= Branch;
 	IDEXJump <= Jump;
 	IDEXALUSrc <= ALUSrc;
@@ -244,28 +244,28 @@ always @(posedge clock)
 
 MUX2S RegDstMux(
 	EXWriteAddr,		// 3-bit Write Address
-	IDEXReadAddr2,	// $rt
-	IDEXReadAddr3,	// $rd
+	IDEXReadAddr2,	   // $rt
+	IDEXReadAddr3,	   // $rd
 	IDEXRegDst			// RegDst Mux 0:$rt, 1:$rd
 	);
 
 MUX2 ALUMux(
-	EXALUSrc,				// 16-bit Data output depending on ALUSrc value	
-	IDEXReadData2,	// Data from $rt
+	EXALUSrc,			// 16-bit Data output depending on ALUSrc value	
+	IDEXReadData2,	   // Data from $rt
 	IDEXSignExtend,	// Sign Extended constant
 	IDEXALUSrc			// ALUSrc 0:$rt, 1:SignExt constant
 	);	
 
 ALU ALU(
-	EXALUOut,				// 16-bit output from the ALU
+	EXALUOut,			// 16-bit output from the ALU
 	EXALUZero,			// equals 1 if the result is 0, and 0 otherwise
-	IDEXReadData1,	// data input
-	EXALUSrc,				// data input
+	IDEXReadData1,	   // data input
+	EXALUSrc,			// data input
 	IDEXALUSelect		// 3-bit select
 	);		
 
 assign aluresult = EXALUOut; // Connect the alu with the outside world
-assign EXBranchAddr = (IDEXSignExtend << 1) + IDEXPCPlus2;
+assign EXBranchAddr = (IDEXSignExtend << 1) + IDEXPCPlus2; // Calculate branch address
 
 //------ EX/MEM pipeline register ---
 
