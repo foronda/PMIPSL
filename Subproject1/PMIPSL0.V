@@ -55,22 +55,24 @@ wire [2:0] IFIDReadAddr1;
 wire [2:0] IFIDReadAddr2;
 wire [2:0] IFIDReadAddr3;
 wire [6:0] IFIDConst;
-wire [15:0] IFIDJumpwire;
 
 //     --- Variables in the ID stage ---
 
-wire [15:0] rdata1; // Variables connected to reg file
-wire [15:0] rdata2;
-wire [15:0] wdata;
-wire [2:0] waddr;
+wire [15:0] IDJumpAddr;				// Calculated Jump Address
+wire [15:0] IDReadData1; 			// Register file outputs ($rs)
+wire [15:0] IDReadData2;			// $rt
+
+wire [15:0] IDSignExt; 				// Sign extension
+
+//wire [15:0] wdata;
+//wire [2:0] waddr;
 wire negclock;
-wire [15:0] IDSignExt; // Sign extension
 
 // Variables from the controller
 wire [1:0] PCControl;	// Control signals to the PC logic
 wire RegWrite;
 wire RegDst;
-wire [2:0] ALU_Select;
+wire [2:0] ALUSelect;
 wire ALUSrc;
 wire Branch;
 wire Jump;
@@ -83,12 +85,12 @@ wire MemtoReg;
 reg [15:0] IDEXPCPlus2; 
 reg [15:0] IDEXRegRead1;
 reg [15:0] IDEXRegRead2;
-reg [2:0] IDEXRegfield2;
-reg [2:0] IDEXRegfield3;
+reg [2:0] IDEXReadAddr2;
+reg [2:0] IDEXReadAddr3;
 reg [16:0] IDEXInstr; //connect to IFIDInstr
 reg [15:0] IDEXSignExtend;
-reg [2:0] IDEXALU_Select;
-reg [15:0] IDEXJumpwire;
+reg [2:0] IDEXALUSelect;
+reg [15:0] IDEXJumpAddr;
 reg IDEXALUSrc;
 reg IDEXRegDst;
 reg IDEXJump;
@@ -119,7 +121,7 @@ reg EXMEMMemRead;
 reg EXMEMMemtoReg;
 reg [15:0] EXMEMRegRead2;
 reg [2:0] EXMEMwriteaddr;
-reg [15:0] EXMEMJumpwire;
+reg [15:0] EXMEMJumpAddr;
 reg [15:0] EXMEMPCPlus2;
 
 //   --- Variables in the MEM stage ---
@@ -152,7 +154,7 @@ always @(posedge clock)
 			if(wbbranch == 1)
 				PC <= EXMEMbranchaddr;
 			else if (EXMEMJump == 1)
-				PC <= EXMEMJumpwire;
+				PC <= EXMEMJumpAddr;
 			else
 				PC <= PC;
 		end
@@ -194,8 +196,8 @@ assign negclock = ~clock;  // Reg file is synchronized
 						   // signal to the reg file.
 
  RegFile rfile1(
- 	rdata1,			// read data output 1
-	rdata2,			// read data output 2
+ 	IDReadData1,			// read data output 1
+	IDReadData2,			// read data output 2
 	negclock,		
 	wbdata,			// write data input
 	MEMWBwriteaddr,			// write address
@@ -206,14 +208,14 @@ assign negclock = ~clock;  // Reg file is synchronized
 	);			
 
 assign IDSignExt = {{9{IFIDInstr[6]}},IFIDInstr[6:0]};
-assign IFIDJumpwire = {IFIDPCPlus2[15:14],IFIDInstr[12:0]<<1};
+assign IDJumpAddr = {IFIDPCPlus2[15:14],IFIDInstr[12:0]<<1};
 
 Control cntrol1(
 	PCControl,					
 	RegWrite,
 	RegDst,
 	ALUSrc,
-	ALU_Select,
+	ALUSelect,
 	Branch,
 	Jump,
 	MemWrite,
@@ -224,20 +226,20 @@ Control cntrol1(
 	reset
 	);
 
-assign probe1 = ALU_Select;
+assign probe1 = ALUSelect;
 //---- ID/EX Pipeline Register --------
 
 
 always @(posedge clock)
 	begin
 	IDEXPCPlus2 <= IFIDPCPlus2;	//pc?
-	IDEXRegRead1 <= rdata1;			//register val 1
-	IDEXRegRead2 <= rdata2;			//register val 2
+	IDEXRegRead1 <= IDReadData1;			//register val 1
+	IDEXRegRead2 <= IDReadData2;			//register val 2
 	IDEXInstr <= IFIDInstr; 		//sasaki said un-needed?
 	IDEXSignExtend <= IDSignExt;	//sign extension
-	IDEXALU_Select <= ALU_Select;	//alu select = aluop?
-	IDEXRegfield2 <= IFIDReadAddr2;
-	IDEXRegfield3 <= IFIDReadAddr3;
+	IDEXALUSelect <= ALUSelect;	//alu select = aluop?
+	IDEXReadAddr2 <= IFIDReadAddr2;
+	IDEXReadAddr3 <= IFIDReadAddr3;
 	IDEXBranch <= Branch;
 	IDEXJump <= Jump;
 	IDEXALUSrc <= ALUSrc;
@@ -247,7 +249,7 @@ always @(posedge clock)
 	IDEXMemRead <= MemRead;
 	IDEXMemWrite <= MemWrite;
 	IDEXMemtoReg <= MemtoReg;
-	IDEXJumpwire <= IFIDJumpwire;
+	IDEXJumpAddr <= IDJumpAddr;
 	end
 
 
@@ -255,8 +257,8 @@ always @(posedge clock)
 
 MUX2S regmux(
 	writeaddr,
-	IDEXRegfield2,
-	IDEXRegfield3,
+	IDEXReadAddr2,
+	IDEXReadAddr3,
 	IDEXRegDst
 	);
 
@@ -272,7 +274,7 @@ ALU alu1(
 	aluzero,	// equals 1 if the result is 0, and 0 otherwise
 	IDEXRegRead1,	// data input
 	alusrc2,		// data input
-	IDEXALU_Select		// 3-bit select
+	IDEXALUSelect		// 3-bit select
 	);		
 
 assign aluresult = aluout1; // Connect the alu with the outside world
@@ -293,7 +295,7 @@ always @(posedge clock)
 	EXMEMbranchaddr <= branchaddr;
 	EXMEMRegRead2 <= IDEXRegRead2;
 	EXMEMwriteaddr <= writeaddr;
-	EXMEMJumpwire <= IDEXJumpwire;
+	EXMEMJumpAddr <= IDEXJumpAddr;
 	EXMEMPCPlus2 <= IDEXPCPlus2;
 	end
 
@@ -301,7 +303,7 @@ always @(posedge clock)
 //------- MEM Stage ----------------
 
 assign pc2 = EXMEMPCPlus2;
-assign Jwire = EXMEMJumpwire;
+assign Jwire = EXMEMJumpAddr;
 assign wbbranch = (EXMEMBranch&EXMEMALUZero);
 
 //dmem out

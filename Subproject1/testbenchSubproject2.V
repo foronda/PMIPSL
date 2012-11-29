@@ -27,6 +27,9 @@ wire [6:0] io_display;
 reg  clock;
 reg  reset;		// Reset
 
+// debug probes
+wire [15:0] probe1, probe2, probe3;
+
 // Clock
 initial clock=0;
 always #1 clock=~clock;
