@@ -11,8 +11,8 @@ Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L
 Analyzing Verilog file "C:/Xilinx/13.4/ISE_DS/ISE//verilog/src/glbl.v" into library work
 Starting static elaboration
 Completed static elaboration
-Fuse Memory Usage: 116696 KB
-Fuse CPU Usage: 701 ms
+Fuse Memory Usage: 117528 KB
+Fuse CPU Usage: 670 ms
 Compiling module RegFile
 Compiling module Control
 Compiling module MUX2S
@@ -27,5 +27,5 @@ Time Resolution for simulation is 1ps.
 Waiting for 1 sub-compilation(s) to finish...
 Compiled 10 Verilog Units
 Built simulation executable C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_isim_beh.exe
-Fuse Memory Usage: 123336 KB
-Fuse CPU Usage: 1263 ms
+Fuse Memory Usage: 123144 KB
+Fuse CPU Usage: 1372 ms

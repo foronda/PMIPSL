@@ -81,8 +81,8 @@ wire MemtoReg;
  //  --- Variables in the ID/EX pipeline register ---
 
 reg [15:0] IDEXPCPlus2; 
-reg [15:0] IDEXRegRead1;
-reg [15:0] IDEXRegRead2;
+reg [15:0] IDEXReadData1;
+reg [15:0] IDEXReadData2;
 reg [2:0] IDEXReadAddr2;
 reg [2:0] IDEXReadAddr3;
 reg [15:0] IDEXSignExtend;
@@ -115,24 +115,23 @@ reg EXMEMJump;
 reg EXMEMMemWrite;
 reg EXMEMMemRead;
 reg EXMEMMemtoReg;
-reg [15:0] EXMEMRegRead2;
-reg [2:0] EXMEMwriteaddr;
+reg [15:0] EXMEMReadData2;
+reg [2:0] EXMEMWriteAddr;
 reg [15:0] EXMEMJumpAddr;
 reg [15:0] EXMEMPCPlus2;
 
 //   --- Variables in the MEM stage ---
 wire MEMBranchMuxAddr;
-//wire [15:0] pc2;
 
 //   --- Variables in the MEM/WB pipeline register ---
-reg [15:0] MEMWBmemread;
-reg [2:0] MEMWBwriteaddr;
+reg [15:0] MEMWBMemRead;
+reg [2:0] MEMWBWriteAddr;
 reg [15:0] MEMWBALUOut;
 reg MEMWBRegWrite;
 reg MEMWBMemtoReg;
 
 //   --- Variables in the WB stage ---
-wire [15:0] wbdata;
+wire [15:0] WBData;
 
 // ***** Logic at each stage of the pipeline *****
 
@@ -185,13 +184,13 @@ assign negclock = ~clock;  // Reg file is synchronized
 						   // signal to the reg file.
 
  RegFile RegFile(
- 	IDReadData1,			// read data output 1
-	IDReadData2,			// read data output 2
+ 	IDReadData1,		// read data output 1
+	IDReadData2,		// read data output 2
 	negclock,		
-	wbdata,			// write data input
-	MEMWBwriteaddr,			// write address
-	IFIDReadAddr1,	// read address 1
-	IFIDReadAddr2,	// read address 2
+	WBData,				// write data input
+	MEMWBWriteAddr,	// write address
+	IFIDReadAddr1,		// read address 1
+	IFIDReadAddr2,		// read address 2
 	MEMWBRegWrite,
 	reset
 	);			
@@ -216,14 +215,14 @@ Control Control(
 	);
 
 assign probe1 = ALUSelect;
-//---- ID/EX Pipeline Register --------
 
+//---- ID/EX Pipeline Register --------
 
 always @(posedge clock)
 	begin
 	IDEXPCPlus2 <= IFIDPCPlus2;	//pc?
-	IDEXRegRead1 <= IDReadData1;			//register val 1
-	IDEXRegRead2 <= IDReadData2;			//register val 2
+	IDEXReadData1 <= IDReadData1;			//register val 1
+	IDEXReadData2 <= IDReadData2;			//register val 2
 	IDEXSignExtend <= IDSignExt;	//sign extension
 	IDEXALUSelect <= ALUSelect;	//alu select = aluop?
 	IDEXReadAddr2 <= IFIDReadAddr2;
@@ -244,31 +243,31 @@ always @(posedge clock)
 //---- EX Stage --------
 
 MUX2S RegDstMux(
-	EXWriteAddr,
-	IDEXReadAddr2,
-	IDEXReadAddr3,
-	IDEXRegDst
+	EXWriteAddr,		// 3-bit Write Address
+	IDEXReadAddr2,	// $rt
+	IDEXReadAddr3,	// $rd
+	IDEXRegDst			// RegDst Mux 0:$rt, 1:$rd
 	);
 
-MUX2 ALUMux( // ALU multiplexer
-	EXALUSrc,		
-	IDEXRegRead2,	
-	IDEXSignExtend,	
-	IDEXALUSrc		
+MUX2 ALUMux(
+	EXALUSrc,				// 16-bit Data output depending on ALUSrc value	
+	IDEXReadData2,	// Data from $rt
+	IDEXSignExtend,	// Sign Extended constant
+	IDEXALUSrc			// ALUSrc 0:$rt, 1:SignExt constant
 	);	
 
 ALU ALU(
-	EXALUOut,	// 16-bit output from the ALU
-	EXALUZero,	// equals 1 if the result is 0, and 0 otherwise
-	IDEXRegRead1,	// data input
-	EXALUSrc,		// data input
+	EXALUOut,				// 16-bit output from the ALU
+	EXALUZero,			// equals 1 if the result is 0, and 0 otherwise
+	IDEXReadData1,	// data input
+	EXALUSrc,				// data input
 	IDEXALUSelect		// 3-bit select
 	);		
 
 assign aluresult = EXALUOut; // Connect the alu with the outside world
 assign EXBranchAddr = (IDEXSignExtend << 1) + IDEXPCPlus2;
-//------ EX/MEM pipeline register ---
 
+//------ EX/MEM pipeline register ---
 
 always @(posedge clock)
  	begin
@@ -281,8 +280,8 @@ always @(posedge clock)
 	EXMEMRegWrite <= IDEXRegWrite;
 	EXMEMBranch <= IDEXBranch;
 	EXMEMBranchAddr <= EXBranchAddr;
-	EXMEMRegRead2 <= IDEXRegRead2;
-	EXMEMwriteaddr <= EXWriteAddr;
+	EXMEMReadData2 <= IDEXReadData2;
+	EXMEMWriteAddr <= EXWriteAddr;
 	EXMEMJumpAddr <= IDEXJumpAddr;
 	EXMEMPCPlus2 <= IDEXPCPlus2;
 	end
@@ -290,33 +289,31 @@ always @(posedge clock)
 
 //------- MEM Stage ----------------
 
-//assign pc2 = EXMEMPCPlus2;
-assign Jwire = EXMEMJumpAddr;
+// And Operation to determine if BEQ
 assign MEMBranchMuxAddr = (EXMEMBranch&EXMEMALUZero);
 
-//dmem out
+// Assign PMIPS Outputs
 assign dmemaddr = EXMEMALUOut;
-assign dmemwdata = EXMEMRegRead2;
+assign dmemwdata = EXMEMReadData2;
 assign dmemwrite = EXMEMMemWrite;	
 assign dmemread = EXMEMMemRead;		
-//attach wires
 
 //------- MEM/WB pipeline register ----
 
 always @(posedge clock)
  	begin
-	MEMWBmemread <= dmemrdata;
+	MEMWBMemRead <= dmemrdata;
 	MEMWBALUOut <= EXMEMALUOut;
-	MEMWBwriteaddr <= EXMEMwriteaddr;
+	MEMWBWriteAddr <= EXMEMWriteAddr;
 	MEMWBMemtoReg <= EXMEMMemtoReg;
 	MEMWBRegWrite <= EXMEMRegWrite;
 	end
 
 //------- WB Stage ------------------
 MUX2 wbmux( // ALU multiplexer
-	wbdata,		
+	WBData,		
 	MEMWBALUOut,
-	MEMWBmemread,		
+	MEMWBMemRead,		
 	MEMWBMemtoReg		
 	);	
 	
