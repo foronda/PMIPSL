@@ -86,7 +86,10 @@ PMIPSL0 comp(
 	clock,
 	imemrdata,	// Instruction memory read data
 	dmemrdata,	// Data memory read data
-	reset		// Reset
+	reset,		// Reset
+   probe1,
+   probe2,
+   probe3
 	);
 
 // Instantiation of Instruction Memory (program)

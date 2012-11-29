@@ -1,4 +1,4 @@
-Running: fuse.exe -relaunch -intstyle "ise" -incremental -lib "unisims_ver" -lib "unimacro_ver" -lib "xilinxcorelib_ver" -o "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_isim_beh.exe" -prj "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_beh.prj" "work.testbench" "work.glbl" 
+Running: C:\Xilinx\13.4\ISE_DS\ISE\bin\nt\unwrapped\fuse.exe -intstyle ise -incremental -lib unisims_ver -lib unimacro_ver -lib xilinxcorelib_ver -o C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_isim_beh.exe -prj C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_beh.prj work.testbench work.glbl 
 ISim O.87xd (signature 0x2f00eba5)
 Number of CPUs detected in this system: 8
 Turning on mult-threading, number of parallel sub-compilation jobs: 16 
@@ -6,27 +6,27 @@ Determining compilation order of HDL files
 Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/MIPS-Parts.V" into library work
 Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/Control.V" into library work
 Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" into library work
-Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchPMIPSL0.V" into library work
-WARNING:HDLCompiler:568 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchPMIPSL0.V" Line 51: Constant value is truncated to fit in <3> bits.
+Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/IM2.V" into library work
+Analyzing Verilog file "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchSubproject2.V" into library work
 Analyzing Verilog file "C:/Xilinx/13.4/ISE_DS/ISE//verilog/src/glbl.v" into library work
 Starting static elaboration
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 257: Size mismatch in connection of port <result>. Formal port size is 16-bit while actual signal size is 3-bit.
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 258: Size mismatch in connection of port <indata0>. Formal port size is 16-bit while actual signal size is 3-bit.
-WARNING:HDLCompiler:189 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 259: Size mismatch in connection of port <indata1>. Formal port size is 16-bit while actual signal size is 3-bit.
+WARNING:HDLCompiler:1016 - "C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchSubproject2.V" Line 79: Port probe1 is not connected to this instance
 Completed static elaboration
-Fuse Memory Usage: 117336 KB
-Fuse CPU Usage: 670 ms
+Fuse Memory Usage: 116888 KB
+Fuse CPU Usage: 701 ms
 Compiling module RegFile
 Compiling module Control
+Compiling module MUX2S
 Compiling module MUX2
 Compiling module ALU
 Compiling module PMIPSL0
+Compiling module IM
 Compiling module DMemory_IO
 Compiling module testbench
 Compiling module glbl
 Time Resolution for simulation is 1ps.
 Waiting for 1 sub-compilation(s) to finish...
-Compiled 8 Verilog Units
+Compiled 10 Verilog Units
 Built simulation executable C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbench_isim_beh.exe
-Fuse Memory Usage: 122952 KB
-Fuse CPU Usage: 1091 ms
+Fuse Memory Usage: 123528 KB
+Fuse CPU Usage: 1185 ms

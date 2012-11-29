@@ -1,0 +1,6 @@
+verilog isim_temp "MIPS-Parts.V"
+verilog isim_temp "Control.V"
+verilog isim_temp "PMIPSL0.V"
+verilog isim_temp "IM2.V"
+verilog isim_temp "testbenchSubproject2.V"
+verilog isim_temp "C:/Xilinx/13.4/ISE_DS/ISE//verilog/src/glbl.v"

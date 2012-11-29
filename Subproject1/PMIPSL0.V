@@ -40,7 +40,8 @@ output [15:0] probe1, probe2, probe3;
 
 
 // ***** Variables at each stage of the pipeline *****
-//
+
+
 //     --- Variables in IF stage and PC logic ---
 
 reg	[31:0] PC; 
@@ -50,12 +51,11 @@ wire 	[31:0] PCPlus2;
 reg [16:0] IFIDInstr; 
 reg [15:0] IFIDPCPlus2;
 wire [3:0] IFIDOpcode;
-wire [2:0] IFIDRegfield1;
-wire [2:0] IFIDRegfield2;
-wire [2:0] IFIDRegfield3;
+wire [2:0] IFIDReadAddr1;
+wire [2:0] IFIDReadAddr2;
+wire [2:0] IFIDReadAddr3;
 wire [6:0] IFIDConst;
 wire [15:0] IFIDJumpwire;
-wire [15:0] BTJ; //branch mux to jump mux
 
 //     --- Variables in the ID stage ---
 
@@ -79,7 +79,7 @@ wire MemRead;
 wire MemtoReg;
 
  //  --- Variables in the ID/EX pipeline register ---
- //done, added in extra -tyler
+
 reg [15:0] IDEXPCPlus2; 
 reg [15:0] IDEXRegRead1;
 reg [15:0] IDEXRegRead2;
@@ -103,7 +103,7 @@ wire [15:0] alusrc2;
 wire [15:0] aluout1;
 wire aluzero;
 wire [2:0] aluselect;
-//added by tyler for EX stage
+
 wire [15:0] branchaddr;
 wire [2:0] writeaddr;
 
@@ -175,9 +175,9 @@ always @(posedge clock)
 	end
 
 assign IFIDOpcode = IFIDInstr[16:13];
-assign IFIDRegfield1 = IFIDInstr[12:10];
-assign IFIDRegfield2 = IFIDInstr[9:7];
-assign IFIDRegfield3 = IFIDInstr[6:4];
+assign IFIDReadAddr1 = IFIDInstr[12:10];
+assign IFIDReadAddr2 = IFIDInstr[9:7];
+assign IFIDReadAddr3 = IFIDInstr[6:4];
 assign IFIDConst = IFIDInstr[6:0];
 
 //--- ID Stage ----------
@@ -199,8 +199,8 @@ assign negclock = ~clock;  // Reg file is synchronized
 	negclock,		
 	wbdata,			// write data input
 	MEMWBwriteaddr,			// write address
-	IFIDRegfield1,	// read address 1
-	IFIDRegfield2,	// read address 2
+	IFIDReadAddr1,	// read address 1
+	IFIDReadAddr2,	// read address 2
 	MEMWBRegWrite,
 	reset
 	);			
@@ -236,8 +236,8 @@ always @(posedge clock)
 	IDEXInstr <= IFIDInstr; 		//sasaki said un-needed?
 	IDEXSignExtend <= IDSignExt;	//sign extension
 	IDEXALU_Select <= ALU_Select;	//alu select = aluop?
-	IDEXRegfield2 <= IFIDRegfield2;
-	IDEXRegfield3 <= IFIDRegfield3;
+	IDEXRegfield2 <= IFIDReadAddr2;
+	IDEXRegfield3 <= IFIDReadAddr3;
 	IDEXBranch <= Branch;
 	IDEXJump <= Jump;
 	IDEXALUSrc <= ALUSrc;
@@ -253,7 +253,7 @@ always @(posedge clock)
 
 //---- EX Stage --------
 
-MUX2 regmux(
+MUX2S regmux(
 	writeaddr,
 	IDEXRegfield2,
 	IDEXRegfield3,
