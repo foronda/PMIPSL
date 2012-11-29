@@ -5,16 +5,16 @@
      behavior or data corruption.  It is strongly advised that
      users do not edit the contents of this file. -->
 <messages>
-<msg type="warning" file="HDLCompiler" num="568" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchPMIPSL0.V" Line 50: Constant value is truncated to fit in &lt;<arg fmt="%d" index="1">3</arg>&gt; bits.
+<msg type="warning" file="HDLCompiler" num="568" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/testbenchPMIPSL0.V" Line 51: Constant value is truncated to fit in &lt;<arg fmt="%d" index="1">3</arg>&gt; bits.
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 252: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">result</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
+<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 254: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">result</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 253: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">indata0</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
+<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 255: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">indata0</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
 </msg>
 
-<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 254: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">indata1</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
+<msg type="warning" file="HDLCompiler" num="189" delta="unknown" >"C:/Users/xi b_ReAL ix/Documents/Dropbox/EE Major/EE 361L/PMIPSL/Subproject1/PMIPSL0.V" Line 256: Size mismatch in connection of port &lt;<arg fmt="%s" index="3">indata1</arg>&gt;. Formal port size is <arg fmt="%d" index="2">16</arg>-bit while actual signal size is <arg fmt="%d" index="1">3</arg>-bit.
 </msg>
 
 </messages>
