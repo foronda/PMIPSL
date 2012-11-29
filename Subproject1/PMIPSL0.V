@@ -16,7 +16,9 @@ module PMIPSL0(
 	imemrdata,	// Instruction memory read data
 	dmemrdata,	// Data memory read data
 	reset,		// Reset
-	probe
+	probe1,
+   probe2,
+   probe3
 	);
 
 output [16:0] imemaddr;
@@ -30,8 +32,8 @@ input [16:0] imemrdata;
 input [15:0] dmemrdata;
 input reset; 
 
-//debug
-output [3:0] probe;
+// 16-bit Debug Probes
+output [15:0] probe1, probe2, probe3;
 
 
 // ***** Variables at each stage of the pipeline *****
@@ -219,7 +221,7 @@ Control cntrol1(
 	reset
 	);
 
-assign probe = ALU_Select;
+assign probe1 = ALU_Select;
 //---- ID/EX Pipeline Register --------
 
 

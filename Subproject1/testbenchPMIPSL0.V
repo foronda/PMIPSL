@@ -25,7 +25,8 @@ wire [15:0] dmemrdata;	// Data memory read data
 reg  clock;
 reg  reset;		// Reset
 
-wire[3:0] probe;
+wire[15:0] probe1, probe2, probe3;
+
 // Clock
 initial clock=0;
 always #1 clock=~clock;
@@ -55,14 +56,14 @@ initial
 initial
 	begin
 	$display("IMem(PC,Instr),ALU(Result,Out),ALU(Clock,Reset), probe\n");
-	$monitor("PC(%d,%d) ALU(%d,%d) [%b,%b], probe(%b)",
+	$monitor("PC(%d,%d) ALU(%d,%d) [%b,%b], probe1(%b)",
 		imemaddr,
 		imemrdata,
 		aluresult,
 		dmemaddr,
 		clock,
 		reset,
-		probe);
+		probe1);
 	end
 
 // Instantiation of processor
@@ -79,7 +80,9 @@ PMIPSL0 comp(
 	imemrdata,	// Instruction memory read data
 	dmemrdata,	// Data memory read data
 	reset,		// Reset
-	probe
+	probe1,
+   probe2,
+   probe3
 	);
 
 
